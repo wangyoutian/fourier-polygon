@@ -24,6 +24,17 @@ var FourierDiagram = function () {
 		this.im = im;
 		return this;
 	};
+	Complex.prototype.scale = function (other) {
+		this.re *= other;
+		this.im *= other;
+		return this;
+	};
+	Complex.prototype.downscale = function (other) {
+		this.re /= other;
+		this.im /= other;
+		return this;
+	};
+
 	Complex.prototype.exp = function () {
 		var re = Math.exp(this.re) * Math.cos(this.im);
 		var im = Math.exp(this.re) * Math.sin(this.im);
@@ -72,7 +83,7 @@ var FourierDiagram = function () {
 				var coef = new Complex(0, (-2) * Math.PI * k * n / N)
 				current.add(coef.exp().mul(this.polyline[n]));
 			}
-			transform.push(current);
+			transform.push(current.scale(1/N)); // we use dft in average version, as that will give the initial point as the average, not sum, of the drawing path, and is more instinct visually;
 		}
 		this.transform = transform;
 	};
@@ -115,15 +126,15 @@ var FourierDiagram = function () {
 		this.circles = [];
 
 		for (var i = 0; i < this.transform.length; i++) {
-			var x = this.transform[i].re / this.transform.length;
-			var y = this.transform[i].im / this.transform.length;
+			var x = this.transform[i].re;// / this.transform.length; /// we used the dft_.sum, not dft_.avg
+			var y = this.transform[i].im;// / this.transform.length;
 			var mag = Math.sqrt(x * x + y * y);
 
 			var centre = document.createElementNS(this.NS, "circle");
 			centre.setAttribute("class", "centrePoint");
 			centre.setAttribute("cx", 0);
 			centre.setAttribute("cy", 0);
-			centre.setAttribute("r", "2"); //show the origin as a dot; this is not an epicycle; or we can treat this as the center of the 1st epicycle;
+			centre.setAttribute("r", "2");
 
 			elemSVG.appendChild(centre);
 			this.centres.push(centre);
@@ -138,11 +149,11 @@ var FourierDiagram = function () {
 			this.circles.push(circle);
 		}
 
-		var endCircle = document.createElementNS(this.NS, "circle");//end of the last vector|complex;
+		var endCircle = document.createElementNS(this.NS, "circle");
 		endCircle.setAttribute("class", "endCircle");
 		endCircle.setAttribute("cx", "0");
 		endCircle.setAttribute("cy", "0");
-		endCircle.setAttribute("r", "4"); 
+		endCircle.setAttribute("r", "4");
 
 		elemSVG.appendChild(endCircle);
 		this.endCircle = endCircle;
@@ -178,8 +189,8 @@ var FourierDiagram = function () {
 
 		for (var i = 0; i < N; k++, i++) {
 
-			var x = acc.re / N;
-			var y = acc.im / N;
+			var x = acc.re;// / N; //  we used the dft_.Sum, not Avg; now we use dfg_.Avg
+			var y = acc.im;// / N;
 
 			polyString += "" + x + "," + y + " ";
 
@@ -193,12 +204,12 @@ var FourierDiagram = function () {
 				k -= N;
 			}
 
-			var coef = new Complex(0, (-2) * Math.PI * k * n / this.period);
+			var coef = new Complex(0, (2) * Math.PI * k * n / this.period);
 			acc.add(coef.exp().mul(this.transform[i]));
 		}
 
-		x = acc.re / N;
-		y = acc.im / N;
+		x = acc.re; // / N;  // as we used dft_.Sum, not Avg;
+		y = acc.im; // / N;
 
 		polyString += "" + x + "," + y;
 		this.svgPolyLine.setAttribute("points", polyString);
