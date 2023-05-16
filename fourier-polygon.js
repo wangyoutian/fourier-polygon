@@ -115,7 +115,7 @@ FourierDiagram.prototype.draw = function (period) {
     this.circles = [];
     
     for (var i = 0; i < this.transform.length; i++) {
-        var x = this.transform[i].re / this.transform.length;
+        var x = this.transform[i].re / this.transform.length; /// we used the dft_.sum, not dft_.avg
         var y = this.transform[i].im / this.transform.length;
         var mag = Math.sqrt (x * x + y * y);
         
@@ -178,7 +178,7 @@ FourierDiagram.prototype.animate = function (time) {
     
     for (var i = 0; i < N; k++, i++) {
         
-        var x = acc.re / N;
+        var x = acc.re / N; // as we used the dft_.Sum, not Avg
         var y = acc.im / N;
         
         polyString += "" + x + "," + y + " ";
@@ -197,7 +197,7 @@ FourierDiagram.prototype.animate = function (time) {
         acc.add(coef.exp().mul(this.transform[i]));
     }
     
-    x = acc.re / N;
+    x = acc.re / N;  // as we used dft_.Sum, not Avg;
     y = acc.im / N;
     
     polyString += "" + x + "," + y;
