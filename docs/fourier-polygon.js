@@ -169,17 +169,17 @@ class FourierDiagram {
 			var negHalf = half - N;
 
 
-            const nyquist = Math.floor(this.transform.length / 2);
+            //const nyquist = Math.floor(this.transform.length / 2);
 
 			this.transform.forEach((circle, k) => {
 
 				var k = k + negHalf;
-                if (k > nyquist) {
-                    k -= N;
-				}
-				if (k<= -nyquist) {
-					k += N;
-				}
+    //            if (k > nyquist) {
+    //                k -= N;
+				//}
+				//if (k<= -nyquist) {
+				//	k += N;
+				//}
 
                 const oldAcc = acc;
                 const angle = new Complex (0, 2 * Math.PI * (k) * ( n +negHalf)/ this.period);
