@@ -89,11 +89,15 @@ class FourierDiagram {
     static getTransform(polyline) {
         const N = polyline.length;
 		const transform = [];
-		var half = Math.floor( (N+1) / 2 );
+		var half = N / 2; // +.5;
+		//var halfMid = half + .5;
 		var negHalf = half - N;
+		var negHalfCeil = Math.ceil(negHalf);
+		var indexerUpper = negHalfCeil + N;
+		//var negHalfMid = negHalf + .5;
 		//var neg_halfMinus = - half+1;
 
-        for (var k = negHalf; k < half; k++) {
+        for (var k = negHalfCeil; k < indexerUpper; k++) {
             var current = new Complex (0, 0);
             for (var n = 0; n < N; n++) {
                 var coef = new Complex (0, -2 * Math.PI * k * (n+negHalf) / N)
@@ -162,18 +166,27 @@ class FourierDiagram {
         while (time < endTime) {
             let acc = new Complex (0, 0);
 
-            const n = time % this.period;
+			const n = time % this.period;
+
+
 			const N = this.transform.length;
 
-			var half = Math.floor((N + 1) / 2);
+			const nAdjusted = n - this.period / 2;// + this.period/N/2;
+
+			var half = N / 2; // +.5;
 			var negHalf = half - N;
+			var negHalfCeil = Math.ceil(negHalf);
+			//var indexerUpper = negHalfCeil + N;
+
+			//var negHalfMid = negHalf + .5;
+
 
 
             //const nyquist = Math.floor(this.transform.length / 2);
 
 			this.transform.forEach((circle, k) => {
 
-				var k = k + negHalf;
+				var k = k + negHalfCeil;
     //            if (k > nyquist) {
     //                k -= N;
 				//}
@@ -182,7 +195,7 @@ class FourierDiagram {
 				//}
 
                 const oldAcc = acc;
-                const angle = new Complex (0, 2 * Math.PI * (k) * ( n +negHalf)/ this.period);
+                const angle = new Complex (0, 2 * Math.PI * (k) * ( (n)/ this.period -0.5));
                 acc = acc.add(angle.exp().mul(circle.sample));
 
                 circle.update(oldAcc, acc);
