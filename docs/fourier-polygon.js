@@ -100,7 +100,7 @@ class FourierDiagram {
         for (var k = negHalfCeil; k < indexerUpper; k++) {
             var current = new Complex (0, 0);
             for (var n = 0; n < N; n++) {
-                var coef = new Complex (0, -2 * Math.PI * k * (n+negHalf) / N)
+                var coef = new Complex (0, -2 * Math.PI * k * n / N)
                 current = current.add(coef.exp().mul(polyline[n ]));
             }
 
@@ -112,7 +112,7 @@ class FourierDiagram {
     boundingBox() {
         let right = this.polyline[0].re;
         let left = right;
-        let top = this.polyline[1].im;
+        let top = this.polyline[0].im;
         let bottom = top;
     
         this.polyline.forEach((point) => {
@@ -195,7 +195,7 @@ class FourierDiagram {
 				//}
 
                 const oldAcc = acc;
-                const angle = new Complex (0, 2 * Math.PI * (k) * ( (n)/ this.period -0.5));
+                const angle = new Complex (0, 2 * Math.PI * (k) * ( n/ this.period));
                 acc = acc.add(angle.exp().mul(circle.sample));
 
                 circle.update(oldAcc, acc);
