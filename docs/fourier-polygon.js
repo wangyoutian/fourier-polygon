@@ -171,7 +171,7 @@ class FourierDiagram {
 
 			const N = this.transform.length;
 
-			const nAdjusted = n - this.period / 2;// + this.period/N/2;
+			//const nAdjusted = n - this.period / 2;// + this.period/N/2;
 
 			var half = N / 2; // +.5;
 			var negHalf = half - N;
